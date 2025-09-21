@@ -40,6 +40,39 @@ func (c Constructor[T, R]) FromPointers(pts []*T) *sliceCastDelegator[T, R] {
 	return d
 }
 
+func (c Constructor[T, R]) FromStringMap(tm map[string]T) *mapCastDelegator[string, T, R] {
+	d := &mapCastDelegator[string, T, R]{
+		castDelegator: castDelegator[T, R]{caster: c.caster},
+		carrierMap:    make(map[string]Carrier[T]),
+	}
+	for k, t := range tm {
+		d.carrierMap[k] = Carry(&t)
+	}
+	return d
+}
+
+func (c Constructor[T, R]) FromIntMap(tm map[int]T) *mapCastDelegator[int, T, R] {
+	d := &mapCastDelegator[int, T, R]{
+		castDelegator: castDelegator[T, R]{caster: c.caster},
+		carrierMap:    make(map[int]Carrier[T]),
+	}
+	for k, t := range tm {
+		d.carrierMap[k] = Carry(&t)
+	}
+	return d
+}
+
+func (c Constructor[T, R]) FromInt64Map(tm map[int64]T) *mapCastDelegator[int64, T, R] {
+	d := &mapCastDelegator[int64, T, R]{
+		castDelegator: castDelegator[T, R]{caster: c.caster},
+		carrierMap:    make(map[int64]Carrier[T]),
+	}
+	for k, t := range tm {
+		d.carrierMap[k] = Carry(&t)
+	}
+	return d
+}
+
 // 偷懶用
 func (c Constructor[T, R]) WithValue(t T) R {
 	return c.FromValue(t).ToValue()

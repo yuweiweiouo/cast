@@ -44,3 +44,40 @@ func (d *sliceCastDelegator[T, R]) ToPointers() []*R {
 	}
 	return rs
 }
+
+type mapCastDelegator[K comparable, T any, R any] struct {
+	castDelegator[T, R]
+	carrierMap map[K]Carrier[T]
+}
+
+func (d *mapCastDelegator[K, T, R]) ToValueMap() map[K]R {
+	rMap := make(map[K]R)
+	for k, carrier := range d.carrierMap {
+		rMap[k] = d.handle(carrier).GetVal()
+	}
+	return rMap
+}
+
+func (d *mapCastDelegator[K, T, R]) ToPointerMap() map[K]*R {
+	rMap := make(map[K]*R)
+	for k, carrier := range d.carrierMap {
+		rMap[k] = d.handle(carrier).Get()
+	}
+	return rMap
+}
+
+func (d *mapCastDelegator[K, T, R]) ToValues() []R {
+	rs := make([]R, 0, len(d.carrierMap))
+	for _, carrier := range d.carrierMap {
+		rs = append(rs, d.handle(carrier).GetVal())
+	}
+	return rs
+}
+
+func (d *mapCastDelegator[K, T, R]) ToPointers() []*R {
+	rs := make([]*R, 0, len(d.carrierMap))
+	for _, carrier := range d.carrierMap {
+		rs = append(rs, d.handle(carrier).Get())
+	}
+	return rs
+}
